@@ -1,2 +1,2 @@
 # ecologicalTools
-Several ecological tools in R
+Several tools in R for ecology and evolutionary modeling

@@ -1,6 +1,6 @@
-library(ggplot2)
-library(grid)
-library(gridExtra)
+library(ggplot2)#
+library(grid)#
+library(gridExtra)#
 library(gtable)
 library(dismo)
 
@@ -665,14 +665,18 @@ grid.clim_1D <-function (glob, glob1, sp, R, th.sp = 0, th.env = 0, geomask = NU
 ######  3D kernel     ##############
 ####################################
 
+library("ks")
+library("ggplot2")
+library(grid)
+library(gridExtra)
 
-sp1<-data.frame(rnorm(50,5,sd=1), rnorm(50,30,sd=3), rnorm(50,10,sd=3))
-sp2<-data.frame(rnorm(50,5,sd=1), rnorm(50,30,sd=3), rnorm(50,0,sd=3))
+sp1<-data.frame(rnorm(50,5,sd=2), rnorm(50,30,sd=3), rnorm(50,10,sd=2))
+sp2<-data.frame(rnorm(50,5,sd=2), rnorm(50,30,sd=3), rnorm(50,5,sd=2))
 #sp3<-data.frame(rnorm(50,10,sd=1), rnorm(50,70,sd=3))
 
 
-names(sp1)<-c("Axis1","Axis2","Axis3")
-names(sp2)<-c("Axis1","Axis2","Axis3")
+names(sp1)<-c("temperature","precipitation","seasonality")
+names(sp2)<-c("temperature","precipitation","seasonality")
 #names(sp3)<-c("Axis1","Axis2")
 
 sp1_3D<-kde(x=sp1)
@@ -684,14 +688,14 @@ purpura<-colorRampPalette(c("purple", "purple4"))
 plot(sp1_3D, drawpoints=TRUE, colors=naranja(10), box=FALSE, col.pt="orange", xlab="temperature", ylab="precipitation", zlab="seasonality")
 plot(sp2_3D, drawpoints=TRUE,add=TRUE, colors=purpura(10), box=FALSE, col.pt="purple")
 
-niceOverPlot(sc1=sp1[,1:2] ,sc2=sp2[,1:2], plot.axis = TRUE)
+niceOverPlot(sc1=sp1[,2:3] ,sc2=sp2[,2:3], plot.axis = TRUE)
 
 
-dir_trabajo="/home/javifl/"
+dir_trabajo="/home/javifl/blog/ndOverlap"
 setwd(dir_trabajo)
 for (i in 1:90) {
   view3d(userMatrix=rotationMatrix(2*pi * i/90, 1, -1, -1))
-  rgl.snapshot(filename=paste("animation2/frame-",
+  rgl.snapshot(filename=paste("frame-",
                               sprintf("%03d", i), ".png", sep=""))
 }
 

@@ -38,30 +38,42 @@ go <- function (sp, env, n, sigma, theta_x, alpha_x, theta_y, alpha_y) {
   
   # First, the function searches in the adjacent cells what have the value that best fits with the species requirements
   
-  
   for (step in 2:n) {
+    
+    lon_candidate<--9999
+    lat_candidate<--9999
+    #browser()
+    #randomization/atraction routine
+    while ( is.na(extract(env, matrix(c(lon_candidate,lat_candidate),1,2)))) {
+      lon_candidate <- track[step-1,1]+ (sigma * rnorm(1)) + (alpha_x * ( theta_x - track[step-1,1]))
+      #browser()
+      lat_candidate <- track[step-1,2]+ (sigma * rnorm(1)) + (alpha_y * ( theta_y - track[step-1,2]))
+      #browser()
+    }
+    
+    # selection routine
     neig <- adjacent(env, 
-                     cellFromXY(env, matrix(c(track[step-1,1],
-                                              track[step-1,2]), 1,2)), 
+                     cellFromXY(env, matrix(c(lon_candidate,
+                                              lat_candidate), 1,2)), 
                      directions=8, pairs=FALSE )
+    
     options <- data.frame()
     for (i in 1:length(neig)){
       options[i,1]<-neig[i]
       options[i,2]<- sp@opt - env[neig[i]]
     }
-    option <- c(options[abs(na.omit(options$V2)) == min(abs(na.omit(options$V2))), 1 ], 
-                options[abs(na.omit(options$V2)) == min(abs(na.omit(options$V2))), 1 ])
+    #browser()
+    option <- c(na.omit(options[abs(options$V2) == min(abs(na.omit(options$V2))), 1 ]), 
+                na.omit(options[abs(options$V2) == min(abs(na.omit(options$V2))), 1 ]))
+    #browser ()
+    
+    
     new_cell <- sample(option,1)
     new_coords <- xyFromCell(env,new_cell)
-    lon_candidate<--9999
-    lat_candidate<--9999
-    
-    while ( is.na(extract(env, matrix(c(lon_candidate,lat_candidate),1,2)))) {
-      lon_candidate <- new_coords[1]+ (sigma * rnorm(1)) + (alpha_x * ( theta_x - new_coords[1]))
-      lat_candidate <- new_coords[2]+ (sigma * rnorm(1)) + (alpha_y * ( theta_y - new_coords[2]))
-    }
-    track[step,1] <- lon_candidate
-    track[step,2] <- lat_candidate
+    #browser()
+    track[step,1] <- new_coords[1]
+    track[step,2] <- new_coords[2]
+    #browser()
   }
   return(track)
 }

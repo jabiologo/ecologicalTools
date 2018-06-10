@@ -147,6 +147,21 @@ p1<-SpatialPoints(path1)
 p2<-SpatialPoints(path2)
 p3<-SpatialPoints(path3)
 
+hr <- data.frame (1:71, 1:71)
+sigma <- seq(0.5,4,0.05)
+
+for (i in 1:71) {
+  print(i)
+  path <- go (sp1, tc, 200, sigma[i], 0, 0, 0, 0)
+  hr[i,1] <- mean(extract(tc, path))
+  pts <-SpatialPoints(path)
+  hr[i, 2] <- mcp(pts, percent=95)$area
+  
+}
+
+
+library(adehabitatHR)
+
 lines(mcp(p1, percent=95), lwd=2.5, lty=2)
 lines(mcp(p2, percent=95), col="red", lwd=2.5, lty=2)
 lines(mcp(p3, percent=95), col="blue", lwd=2.5, lty=2)
